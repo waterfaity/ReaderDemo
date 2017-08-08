@@ -1,4 +1,4 @@
-package com.waterfairy.readerdemo;
+package com.xueduoduo.reader;
 
 import org.junit.Test;
 

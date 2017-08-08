@@ -1,4 +1,4 @@
-package com.waterfairy.readerdemo;
+package com.xueduoduo.reader;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
