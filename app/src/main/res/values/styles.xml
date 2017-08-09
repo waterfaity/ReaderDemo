@@ -23,11 +23,18 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">false</item>
         <!--背景半透明-->
         <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="touch_style">
+    </style>
+
+    <style name="start_read_button_style">
+        <item name="android:background"> @drawable/bg_start_read</item>
     </style>
 
 </resources>

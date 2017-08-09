@@ -14,4 +14,13 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string-array name="grade">
+        <item>全部</item>
+        <item>一年级</item>
+        <item>二年级</item>
+        <item>三年级</item>
+        <item>四年级</item>
+        <item>五年级</item>
+        <item>六年级</item>
+    </string-array>
 </resources>

@@ -1,4 +1,4 @@
-package com.xueduoduo.database;
+package com.xueduoduo.reader.database;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

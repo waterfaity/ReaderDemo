@@ -3,6 +3,7 @@
           package="com.xueduoduo.reader">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name="com.xueduoduo.application.MyApp"
         android:allowBackup="true"
@@ -11,19 +12,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.xueduoduo.reader.welcome.WelcomeActivity">
+        <activity android:name=".welcome.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.xueduoduo.reader.main.MainActivity">
+        <activity
+            android:name=".main.MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustNothing">
         </activity>
         <activity
-            android:name="com.xueduoduo.reader.login.LoginActivity"
+            android:name=".login.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/LoginTheme">
+        </activity>
+        <activity
+            android:name=".read.IntroduceActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
     </application>
 

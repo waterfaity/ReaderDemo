@@ -6,4 +6,10 @@
 
     <color name="colorAccentLogin">#ca903e</color>
     <color name="white">#fff</color>
+    <color name="color_tab">#424248</color>
+    <color name="color_bg_main">#f7f7f7</color>
+    <color name="black">#000000</color>
+    <color name="color_text_normal">#54545c</color>
+    <color name="color_hint_text_normal">#888888</color>
+    <color name="trans">#00000000</color>
 </resources>

@@ -7,8 +7,8 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.waterfairy.utils.ToastUtils;
-import com.xueduoduo.database.DaoMaster;
-import com.xueduoduo.database.DaoSession;
+import com.xueduoduo.reader.database.DaoMaster;
+import com.xueduoduo.reader.database.DaoSession;
 import com.xueduoduo.http.bean.ClassInfoBean;
 import com.xueduoduo.http.bean.UserBean;
 import com.xueduoduo.reader.utils.ShareUtil;
@@ -41,7 +41,7 @@ public class MyApp extends Application {
         setDatabase();
     }
 
-//    /**
+    //    /**
 //     * 设置greenDao
 //     */
     private void setDatabase() {
@@ -55,7 +55,8 @@ public class MyApp extends Application {
         daoMaster = new DaoMaster(sqLiteDatabase);
         daoSession = daoMaster.newSession();
     }
-//
+
+    //
     public DaoSession getDaoSession() {
         return daoSession;
     }
@@ -90,5 +91,9 @@ public class MyApp extends Application {
 
     public ArrayList<ClassInfoBean> getClassInfo() {
         return classInfo;
+    }
+
+    public float getDensity() {
+        return getAppContext().getResources().getDisplayMetrics().density;
     }
 }

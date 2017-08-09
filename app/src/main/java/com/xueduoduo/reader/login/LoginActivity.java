@@ -22,6 +22,7 @@ import com.xueduoduo.http.bean.UserBean;
 import com.xueduoduo.http.response.BaseResponse;
 import com.xueduoduo.reader.R;
 import com.waterfairy.utils.ToastUtils;
+import com.xueduoduo.reader.dialog.LoadingDialog;
 import com.xueduoduo.reader.main.MainActivity;
 import com.xueduoduo.reader.utils.ShareUtil;
 
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private EditText mETAccount;
     private EditText mETPassword;
+    private LoadingDialog mDialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +72,13 @@ public class LoginActivity extends AppCompatActivity {
             mETAccount.setText("teacher");
             mETPassword.setText("c230415d9f455e93e080d23e7727a1a8");
         }
-
-
     }
 
     private void login() {
-        Log.i(TAG, "login: ");
+        if (mDialogLoading == null) {
+            mDialogLoading = new LoadingDialog(this);
+        }
+        mDialogLoading.show();
         final String account = mETAccount.getText().toString();
         if (TextUtils.isEmpty(account)) {
             ToastUtils.show("请输入帐号");
@@ -91,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         normalRetrofit.login(account, password).enqueue(new BaseCallback<BaseResponse>() {
             @Override
             public void onSuccess(BaseResponse baseResponse) {
+                mDialogLoading.dismiss();
                 UserBean user = baseResponse.getUser();
-                Log.i(TAG, "onSuccess: " + user.getUserName());
                 ShareUtil.saveAccountAndPassword(account, password);
                 ShareUtil.saveUserBeanJson(user);
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -102,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailed(int code, final String message) {
+                mDialogLoading.dismiss();
                 ToastUtils.show(message);
             }
         });

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="touch_style">
+        <item name="android:background">@drawable/ripple</item>
+    </style>
+
+    <style name="start_read_button_style">
+        <item name="android:background">@drawable/ripple_start_read_button</item>
+    </style>
+</resources>
