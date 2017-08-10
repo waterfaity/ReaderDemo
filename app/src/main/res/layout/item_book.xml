@@ -12,7 +12,7 @@
         android:id="@+id/book_rel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_text_normal"
+        android:background="@drawable/bg_style_book"
         android:clickable="true">
 
 

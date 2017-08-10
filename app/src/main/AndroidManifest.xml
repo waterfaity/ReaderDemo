@@ -3,6 +3,8 @@
           package="com.xueduoduo.reader">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.xueduoduo.application.MyApp"
@@ -31,6 +33,10 @@
         </activity>
         <activity
             android:name=".read.IntroduceActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+        <activity
+            android:name=".read.ReadActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
     </application>

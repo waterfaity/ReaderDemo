@@ -12,8 +12,8 @@ import java.io.Serializable;
  * 代替网络数据
  */
 @Entity
-public class BookDB implements Serializable{
-    private final static long serialVersionUID=201708091841l;
+public class BookDB implements Serializable {
+    private final static long serialVersionUID = 201708091841l;
 
     public BookDB(String bookName, String introduce, String dynasty, String author, int grade) {
         this.bookName = bookName;
@@ -25,6 +25,7 @@ public class BookDB implements Serializable{
 
     @Id(autoincrement = true)
     private Long id;
+    private long bookId;//书本id
     private String bookName;//书名
     private String dynasty;//年代
     private String introduce;//简介
@@ -36,10 +37,11 @@ public class BookDB implements Serializable{
     private String configInfo;//书本配置信息
     private String extraData;
 
-    @Generated(hash = 797195301)
-    public BookDB(Long id, String bookName, String dynasty, String introduce, String author, int grade,
-            int totalPage, String configInfo, String extraData) {
+    @Generated(hash = 1561443417)
+    public BookDB(Long id, long bookId, String bookName, String dynasty, String introduce,
+            String author, int grade, int totalPage, String configInfo, String extraData) {
         this.id = id;
+        this.bookId = bookId;
         this.bookName = bookName;
         this.dynasty = dynasty;
         this.introduce = introduce;
@@ -124,5 +126,13 @@ public class BookDB implements Serializable{
 
     public void setExtraData(String extraData) {
         this.extraData = extraData;
+    }
+
+    public long getBookId() {
+        return this.bookId;
+    }
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
     }
 }

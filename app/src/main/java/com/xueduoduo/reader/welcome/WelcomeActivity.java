@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.waterfairy.utils.AssetsUtils;
+import com.waterfairy.utils.PermissionUtils;
 import com.xueduoduo.application.MyApp;
+import com.xueduoduo.reader.bean.BookConfigBean;
 import com.xueduoduo.reader.database.BookDB;
 import com.xueduoduo.reader.database.BookDBDao;
 import com.xueduoduo.reader.database.DaoSession;
@@ -14,6 +17,8 @@ import com.xueduoduo.reader.login.LoginActivity;
 import com.xueduoduo.reader.main.MainActivity;
 import com.xueduoduo.reader.utils.ShareUtil;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -22,7 +27,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
+        PermissionUtils.requestPermission(this, PermissionUtils.REQUEST_STORAGE);
         initBookData();
         if (ShareUtil.getUserBean().isLogin) {
             startActivity(new Intent(this, MainActivity.class));
@@ -48,8 +53,38 @@ public class WelcomeActivity extends AppCompatActivity {
         BookDB bookDB3 = new BookDB("论语 ",
                 "　　《论语》由孔子弟子及再传弟子编写而成，至汉代成书。主要记录孔子及其弟子的言行，较为集中地反映了孔子的思想，是儒家学派的经典著作之一。以语录体为主，叙事体为辅，集中体现了孔子的政治主张、伦理思想、道德观念及教育原则等。与《大学》、《中庸》、《孟子》并称“四书”，与《诗》、《书》、《礼》、《易》、《春秋》等“五经”，总称“四书五经”。全书共20篇、492章，首创 “语录体” 。是中国现传扬并学习的古代著作之一。",
                 "东周春秋", "孔子", 2);
+        bookDB.setTotalPage(5);
+        try {
+            bookDB.setConfigInfo(getConfig());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bookDB.setBookId(1001);
         bookDBDao.save(bookDB);
+        bookDB2.setBookId(1002);
         bookDBDao.save(bookDB2);
+        bookDB3.setBookId(1003);
         bookDBDao.save(bookDB3);
+    }
+
+    private String getConfig() throws IOException {
+        String baseSave = getExternalCacheDir().getAbsolutePath() + "/book";
+        AssetsUtils.copyPath(this, "book", baseSave);
+        BookConfigBean bookConfigBean = new BookConfigBean();
+        List<BookConfigBean.Chapter> chapters = new ArrayList<>();
+        chapters.add(new BookConfigBean.Chapter("扉页", 1));
+        chapters.add(new BookConfigBean.Chapter("总序", 2));
+        chapters.add(new BookConfigBean.Chapter("一.孝", 3));
+        String basePath = baseSave + "/book_1001/";
+        List<BookConfigBean.PageInfo> pageInfos = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            BookConfigBean.PageInfo bookConfig = null;
+            bookConfig = new BookConfigBean.PageInfo(i, "", basePath + "book_1001_" + (i+1) + ".jpg");
+            pageInfos.add(bookConfig);
+        }
+        bookConfigBean.setBookId(1001);
+        bookConfigBean.setChapterList(chapters);
+        bookConfigBean.setPageInfoList(pageInfos);
+        return bookConfigBean.toJson();
     }
 }

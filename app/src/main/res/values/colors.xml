@@ -12,4 +12,5 @@
     <color name="color_text_normal">#54545c</color>
     <color name="color_hint_text_normal">#888888</color>
     <color name="trans">#00000000</color>
+    <color name="color_text_read">#515156</color>
 </resources>

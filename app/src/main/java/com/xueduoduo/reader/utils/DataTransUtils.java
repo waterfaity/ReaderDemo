@@ -1,5 +1,10 @@
 package com.xueduoduo.reader.utils;
 
+import com.xueduoduo.reader.bean.BookConfigBean;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by water_fairy on 2017/8/9.
  * 995637517@qq.com
@@ -31,5 +36,13 @@ public class DataTransUtils {
                 break;
         }
         return gradeStr + "年级";
+    }
+
+    public static List getChapterStr(List<BookConfigBean.Chapter> chapterList) {
+        List<String> list = new ArrayList<>();
+        for (BookConfigBean.Chapter chapter : chapterList) {
+            list.add(chapter.getChapterName());
+        }
+        return list;
     }
 }
