@@ -1,5 +1,6 @@
 package com.xueduoduo.reader.welcome;
 
+import android.app.Application;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,12 +75,13 @@ public class WelcomeActivity extends AppCompatActivity {
         List<BookConfigBean.Chapter> chapters = new ArrayList<>();
         chapters.add(new BookConfigBean.Chapter("扉页", 1));
         chapters.add(new BookConfigBean.Chapter("总序", 2));
-        chapters.add(new BookConfigBean.Chapter("一.孝", 3));
         String basePath = baseSave + "/book_1001/";
         List<BookConfigBean.PageInfo> pageInfos = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             BookConfigBean.PageInfo bookConfig = null;
-            bookConfig = new BookConfigBean.PageInfo(i, "", basePath + "book_1001_" + (i+1) + ".jpg");
+            String audioPath = basePath + "book_1001_" + (i + 1) + ".mp3";
+            if (i == 0) audioPath = "";
+            bookConfig = new BookConfigBean.PageInfo(i, audioPath, basePath + "book_1001_" + (i + 1) + ".jpg");
             pageInfos.add(bookConfig);
         }
         bookConfigBean.setBookId(1001);

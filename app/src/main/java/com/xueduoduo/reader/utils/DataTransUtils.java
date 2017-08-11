@@ -1,6 +1,8 @@
 package com.xueduoduo.reader.utils;
 
 import com.xueduoduo.reader.bean.BookConfigBean;
+import com.xueduoduo.reader.database.BookDB;
+import com.xueduoduo.reader.database.BookShelfDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,5 +46,43 @@ public class DataTransUtils {
             list.add(chapter.getChapterName());
         }
         return list;
+    }
+
+    public static BookShelfDB getBookShelfDBFromBookDB(BookDB bookDB) {
+        BookShelfDB bookShelfDB = new BookShelfDB();
+        bookShelfDB.setAuthor(bookDB.getAuthor());
+        bookShelfDB.setBookId(bookDB.getBookId());
+        bookShelfDB.setBookName(bookDB.getBookName());
+        bookShelfDB.setConfigInfo(bookDB.getConfigInfo());
+        bookShelfDB.setDynasty(bookDB.getDynasty());
+        bookShelfDB.setGrade(bookDB.getGrade());
+        bookShelfDB.setExtraData(bookDB.getExtraData());
+        bookShelfDB.setIntroduce(bookDB.getIntroduce());
+        bookShelfDB.setTotalPage(bookDB.getTotalPage());
+        return bookShelfDB;
+    }
+
+    public static BookDB getBookDBFromBookShelfDB(BookShelfDB bookShelfDB) {
+        BookDB bookDB = new BookDB();
+        bookDB.setAuthor(bookShelfDB.getAuthor());
+        bookDB.setBookId(bookShelfDB.getBookId());
+        bookDB.setBookName(bookShelfDB.getBookName());
+        bookDB.setConfigInfo(bookShelfDB.getConfigInfo());
+        bookDB.setDynasty(bookShelfDB.getDynasty());
+        bookDB.setGrade(bookShelfDB.getGrade());
+        bookDB.setExtraData(bookShelfDB.getExtraData());
+        bookDB.setIntroduce(bookShelfDB.getIntroduce());
+        bookDB.setTotalPage(bookShelfDB.getTotalPage());
+        return bookDB;
+    }
+
+    public static List<BookDB> getBookDBListFromBookShelfDB(List<BookShelfDB> bookShelfDBs) {
+        List<BookDB> bookDBList = new ArrayList<>();
+        if (bookShelfDBs != null && bookShelfDBs.size() > 0) {
+            for (int i = 0; i < bookShelfDBs.size(); i++) {
+                bookDBList.add(getBookDBFromBookShelfDB(bookShelfDBs.get(i)));
+            }
+        }
+        return bookDBList;
     }
 }

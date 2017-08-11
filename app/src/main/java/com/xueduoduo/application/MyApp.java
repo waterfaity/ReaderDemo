@@ -27,6 +27,7 @@ public class MyApp extends Application {
     private DaoMaster.DevOpenHelper devOpenHelper;
     private DaoMaster daoMaster;
     private ArrayList<ClassInfoBean> classInfo;
+    private boolean newSave;//新的书架保存
 
     @Override
     public void onCreate() {
@@ -95,5 +96,14 @@ public class MyApp extends Application {
 
     public float getDensity() {
         return getAppContext().getResources().getDisplayMetrics().density;
+    }
+
+    public boolean getNewSave() {
+        return newSave;
+    }
+
+    public MyApp setNewSave(boolean newSave) {
+        this.newSave = newSave;
+        return this;
     }
 }

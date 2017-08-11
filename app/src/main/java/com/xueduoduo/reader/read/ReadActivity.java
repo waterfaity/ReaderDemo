@@ -2,10 +2,10 @@ package com.xueduoduo.reader.read;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.waterfairy.media.Mp3Player;
 import com.waterfairy.utils.ToastUtils;
 import com.xueduoduo.application.MyApp;
 import com.xueduoduo.reader.R;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class ReadActivity extends AppCompatActivity implements
         View.OnTouchListener,
-        ViewPager.OnPageChangeListener, AdapterView.OnItemClickListener {
+        ViewPager.OnPageChangeListener, AdapterView.OnItemClickListener, View.OnClickListener {
     private RelativeLayout mProgressBar;
     private float density;
     private int mProgressMaxLen, mProgressCanChangeMaxLen;
@@ -50,6 +51,10 @@ public class ReadActivity extends AppCompatActivity implements
     private ListView mListView;
     private DrawerLayout drawerLayout;
     private int currentChapter;//
+    private BaseAdapter chapterAdapter;
+    private Mp3Player mp3Player;
+    private ImageView mIVSound;
+    private TextView mTVBookName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,7 @@ public class ReadActivity extends AppCompatActivity implements
     }
 
     private void initData() {
+        mp3Player = new Mp3Player();
         String configInfo = ((BookDB) getIntent().getSerializableExtra("book")).getConfigInfo();
         bookConfigBean = new Gson().fromJson(configInfo, BookConfigBean.class);
         pageInfoList = bookConfigBean.getPageInfoList();
@@ -72,7 +78,7 @@ public class ReadActivity extends AppCompatActivity implements
 
     private void setDrawListView() {
         if (chapterList != null && chapterList.size() > 0) {
-            mListView.setAdapter(new BaseAdapter() {
+            mListView.setAdapter(chapterAdapter = new BaseAdapter() {
                 @Override
                 public int getCount() {
                     return chapterList.size();
@@ -107,6 +113,12 @@ public class ReadActivity extends AppCompatActivity implements
     }
 
     private void initView() {
+        mTVBookName = (TextView) findViewById(R.id.book_name);
+        String bookName = getIntent().getStringExtra("bookName");
+        mTVBookName.setText(bookName);
+        mIVSound = (ImageView) findViewById(R.id.audio);
+        mIVSound.setTag(true);
+        mIVSound.setOnClickListener(this);
         mListView = (ListView) findViewById(R.id.list_view);
         mTVPageNum = (TextView) findViewById(R.id.page_num);
         mRLHandle = (RelativeLayout) findViewById(R.id.handle_rel);
@@ -130,17 +142,25 @@ public class ReadActivity extends AppCompatActivity implements
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                int currentItem = mViewPager.getCurrentItem();
+                int currentItem = mViewPager.getCurrentItem() + 1;
+                currentChapter = chapterList.get(chapterList.size() - 1).getPage() - 1;
                 for (int i = 0; i < chapterList.size(); i++) {
                     BookConfigBean.Chapter chapter = chapterList.get(i);
                     int page = i + 1;
-                    if (page != totalPage) {
-                        if (page <= chapter.getPage() && page < chapterList.get(page).getPage()) {
-// TODO: 2017/8/10  设置侧滑颜色
-                            currentChapter = i;
+                    if (page != chapterList.size()) {
+                        if (currentItem >= chapter.getPage() && currentItem < chapterList.get(page).getPage()) {
+                            int nextPage = chapterList.get(page).getPage();
+                            if (currentItem < nextPage) {
+                                currentChapter = i;
+                                break;
+                            } else if (currentItem == nextPage) {
+                                currentChapter = nextPage - 1;
+                                break;
+                            }
                         }
                     }
                 }
+                chapterAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -255,9 +275,26 @@ public class ReadActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * @param pos
+     * @param setProgress
+     */
     private void setPageNum(int pos, boolean setProgress) {
         mTVPageNum.setText(pos + "/" + totalPage);
         setProgress((pos) / (float) pageInfoList.size());
+        playAudio(pos);
+    }
+
+    private void playAudio(int pos) {
+        if ((Boolean) mIVSound.getTag()) {
+            if (mp3Player != null) {
+                mp3Player.release();
+                String baseSave = getExternalCacheDir().getAbsolutePath() + "/book";
+                String audioPath = baseSave + "/book_" + bookConfigBean.getBookId() + "/book_" + bookConfigBean.getBookId() + "_" + pos + ".mp3";
+                mp3Player.play(audioPath);
+            }
+        }
+
     }
 
     @Override
@@ -290,6 +327,22 @@ public class ReadActivity extends AppCompatActivity implements
         drawerLayout.closeDrawers();
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.audio) {
+            ImageView sound = (ImageView) v;
+            boolean playSound = (boolean) sound.getTag();
+            sound.setTag(!(boolean) sound.getTag());
+            if (playSound) {
+                mp3Player.release();
+                sound.setImageResource(R.mipmap.no_sound);
+            } else {
+                mp3Player.play(bookConfigBean.getPageInfoList().get(mViewPager.getCurrentItem()).getAudioUrl());
+                sound.setImageResource(R.mipmap.sound);
+            }
+        }
+    }
+
 
     private class OnViewPagerClickListener implements View.OnClickListener {
         @Override
@@ -309,5 +362,11 @@ public class ReadActivity extends AppCompatActivity implements
         AlphaAnimation alphaAnimation = new AlphaAnimation(startAlpha, endAlpha);
         alphaAnimation.setDuration(300);
         mRLHandle.startAnimation(alphaAnimation);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mp3Player.release();
     }
 }
