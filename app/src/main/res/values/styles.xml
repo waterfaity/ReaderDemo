@@ -8,13 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <!-- Base application theme. -->
-    <style name="LoginTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccentLogin</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
-
     </style>
 
     <style name="dialog" parent="Base.Theme.AppCompat.Dialog">
@@ -34,7 +33,7 @@
     </style>
 
     <style name="start_read_button_style">
-        <item name="android:background"> @drawable/bg_start_read</item>
+        <item name="android:background">@drawable/bg_start_read</item>
     </style>
 
 </resources>

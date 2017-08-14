@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +56,7 @@ public class ReadActivity extends AppCompatActivity implements
     private Mp3Player mp3Player;
     private ImageView mIVSound;
     private TextView mTVBookName;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class ReadActivity extends AppCompatActivity implements
     }
 
     private void setDrawLayout() {
-        drawerLayout.setDrawerListener(new ActionBarDrawerToggle(this, drawerLayout, R.color.color_bg_main, R.string.app_name, R.string.app_name) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.color.color_bg_main, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -162,7 +164,8 @@ public class ReadActivity extends AppCompatActivity implements
                 }
                 chapterAdapter.notifyDataSetChanged();
             }
-        });
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
     private void setViewPager() {
@@ -201,7 +204,7 @@ public class ReadActivity extends AppCompatActivity implements
     }
 
     public void openMenu(View view) {
-
+        drawerLayout.openDrawer(Gravity.LEFT);
     }
 
     public void openAudio(View view) {
@@ -247,7 +250,7 @@ public class ReadActivity extends AppCompatActivity implements
             float radio = currentLen / mProgressCanChangeMaxLen;
             int page = (int) (radio * totalPage);
             mViewPager.setCurrentItem(page);
-            setPageNum(page, false);
+            setPageNum(page + 1, false);
             setProgress(radio);
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -275,11 +278,15 @@ public class ReadActivity extends AppCompatActivity implements
         }
     }
 
+    int currentPage = 0;//1.2.3.4...
+
     /**
      * @param pos
      * @param setProgress
      */
     private void setPageNum(int pos, boolean setProgress) {
+        if (currentPage == pos) return;
+        currentPage = pos;
         mTVPageNum.setText(pos + "/" + totalPage);
         setProgress((pos) / (float) pageInfoList.size());
         playAudio(pos);

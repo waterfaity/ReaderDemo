@@ -1,11 +1,13 @@
 package com.xueduoduo.reader.main;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +65,14 @@ public class FragmentFirst extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     private void search() {
-        mEtSearch.getText().toString();
-        ToastUtils.show("搜索");
+        String searchContent = mEtSearch.getText().toString();
+        if (TextUtils.isEmpty(searchContent)) {
+            ToastUtils.show("请输入书本名字");
+        } else {
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            intent.putExtra("searchContent", searchContent);
+            startActivity(intent);
+        }
     }
 
     private void initGradeLin() {

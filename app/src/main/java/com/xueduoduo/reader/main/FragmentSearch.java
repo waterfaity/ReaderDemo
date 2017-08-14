@@ -22,11 +22,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.waterfairy.utils.ToastUtils;
 import com.xueduoduo.application.MyApp;
 import com.xueduoduo.reader.database.BookDB;
+import com.xueduoduo.reader.database.BookDBDao;
 import com.xueduoduo.reader.database.BookShelfDB;
 import com.xueduoduo.reader.R;
 import com.xueduoduo.reader.database.BookShelfDBDao;
 import com.xueduoduo.reader.read.IntroduceActivity;
-import com.xueduoduo.reader.utils.DataTransUtils;
 
 import java.util.List;
 
@@ -35,21 +35,20 @@ import java.util.List;
  * 995637517@qq.com
  */
 
-public class FragmentBookShelf extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener, BaseQuickAdapter.OnItemChildClickListener, TextWatcher {
+public class FragmentSearch extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener, BaseQuickAdapter.OnItemChildClickListener {
     private View mRootView;
     private RecyclerView mRecyclerView;
     private ImageView mIVSearch, mIVDeleteSearchContent;
     private EditText mEtSearch;
-    private List<BookShelfDB> bookShelfDBs;
+    private List<BookDB> bookDBs;
     private BookRecyclerAdapter mAdapter;
     private TextView mTVEmpty;
-    private boolean isSearch;
-
+    private String searchContent;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_book_shelf, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_search, container, false);
         initView();
         initData();
         return mRootView;
@@ -65,42 +64,39 @@ public class FragmentBookShelf extends Fragment implements View.OnClickListener,
         mIVSearch = (ImageView) mRootView.findViewById(R.id.search_img);
         mIVSearch.setOnClickListener(this);
         mEtSearch.setOnEditorActionListener(this);
-        mEtSearch.addTextChangedListener(this);
+        mRootView.findViewById(R.id.back).setOnClickListener(this);
     }
 
     private void initData() {
-        if (!MyApp.getInstance().getNewSave()) {
-            initRecycler();
-        }
+        searchContent = getArguments().getString("searchContent");
     }
 
     private void initRecycler() {
+        if (!TextUtils.isEmpty(searchContent)) {
+            mEtSearch.setText(searchContent);
+            searchContent = "";
+        }
         String searchText = mEtSearch.getText().toString();
         if (TextUtils.isEmpty(searchText)) {
-            bookShelfDBs = MyApp.getInstance().getDaoSession().getBookShelfDBDao().loadAll();
+            bookDBs = MyApp.getInstance().getDaoSession().getBookDBDao().loadAll();
         } else {
-            bookShelfDBs = MyApp.getInstance().getDaoSession().getBookShelfDBDao().queryBuilder()
-                    .where(BookShelfDBDao.Properties.BookName.like(searchText)).list();
+            bookDBs = MyApp.getInstance().getDaoSession().getBookDBDao().queryBuilder()
+                    .where(BookDBDao.Properties.BookName.like(searchText)).list();
         }
-        if (bookShelfDBs != null && bookShelfDBs.size() > 0) {
+        if (bookDBs != null && bookDBs.size() > 0) {
             mTVEmpty.setVisibility(View.GONE);
         } else {
-            if (isSearch) {
-                mTVEmpty.setText("书架中没有查到该书本");
-                ToastUtils.show("书架中没有查到该书本");
-            } else {
-                mTVEmpty.setText("书架中暂无书本");
-            }
+            mTVEmpty.setText("没有查到该书本");
             mTVEmpty.setVisibility(View.VISIBLE);
+            ToastUtils.show("没有查到该书本");
         }
-        mAdapter = new BookRecyclerAdapter(getActivity(), 0, DataTransUtils.getBookDBListFromBookShelfDB(bookShelfDBs));
+        mAdapter = new BookRecyclerAdapter(getActivity(), 0, bookDBs);
         mAdapter.setOnItemChildClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-        isSearch = false;
     }
 
-    public static FragmentBookShelf newInstance() {
-        return new FragmentBookShelf();
+    public static FragmentSearch newInstance() {
+        return new FragmentSearch();
     }
 
     @Override
@@ -110,6 +106,8 @@ public class FragmentBookShelf extends Fragment implements View.OnClickListener,
         } else if (v.getId() == R.id.delete_text) {
             mEtSearch.setText("");
             mIVDeleteSearchContent.setVisibility(View.INVISIBLE);
+        } else if (v.getId() == R.id.back) {
+            getActivity().finish();
         }
     }
 
@@ -129,7 +127,6 @@ public class FragmentBookShelf extends Fragment implements View.OnClickListener,
         if (TextUtils.isEmpty(mEtSearch.getText().toString())) {
             ToastUtils.show("请输入搜索内容");
         } else {
-            isSearch = true;
             initRecycler();
         }
     }
@@ -145,30 +142,6 @@ public class FragmentBookShelf extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        if (MyApp.getInstance().getNewSave()) {
-            initRecycler();
-            MyApp.getInstance().setNewSave(false);
-        }
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchText = s.toString();
-        if (TextUtils.isEmpty(searchText)) {
-            mIVDeleteSearchContent.setVisibility(View.INVISIBLE);
-            initRecycler();
-        } else {
-            mIVDeleteSearchContent.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
+        initRecycler();
     }
 }
